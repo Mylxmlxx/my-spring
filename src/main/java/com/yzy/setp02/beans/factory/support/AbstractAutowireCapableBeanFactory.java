@@ -15,8 +15,20 @@ import java.lang.reflect.Constructor;
  */
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
 
+    /**
+     * 实例化策略
+     */
     private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
+    /**
+     * 创建 Bean 实例
+     *
+     * @param beanName
+     * @param beanDefinition
+     * @param args
+     * @return
+     * @throws BeansException
+     */
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
         Object bean = null;
@@ -32,6 +44,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return bean;
     }
 
+    /**
+     * 创建 Bean 实例 提供creatBean使用
+     *
+     * @param beanDefinition
+     * @param beanName
+     * @param args
+     * @return
+     */
     protected Object createBeanInstance(BeanDefinition beanDefinition, String beanName, Object[] args) {
         Constructor constructorToUse = null;
         Class<?> beanClass = beanDefinition.getBeanClass();
@@ -56,6 +76,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 String name = propertyValue.getName();
                 Object value = propertyValue.getValue();
 
+                // BeanReference 特殊实例化
                 if (value instanceof BeanReference) {
                     // A 依赖 B，获取 B 的实例化
                     BeanReference beanReference = (BeanReference) value;
@@ -69,10 +90,20 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         }
     }
 
+    /**
+     * 获取实例化策略
+     *
+     * @return
+     */
     public InstantiationStrategy getInstantiationStrategy() {
         return instantiationStrategy;
     }
 
+    /**
+     * 设置实例化策略
+     *
+     * @param instantiationStrategy
+     */
     public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
         this.instantiationStrategy = instantiationStrategy;
     }
